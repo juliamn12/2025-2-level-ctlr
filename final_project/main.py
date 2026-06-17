@@ -7,9 +7,9 @@ import sys
 import unicodedata
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
 from lab_6_pipeline.pipeline import UDPipeAnalyzer
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 def main(corpus_path: Path, dist_path: Path) -> None:
