@@ -7,9 +7,9 @@ import sys
 import unicodedata
 from pathlib import Path
 
-from lab_6_pipeline.pipeline import UDPipeAnalyzer
-
 sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from lab_6_pipeline.pipeline import UDPipeAnalyzer
 
 
 def main(corpus_path: Path, dist_path: Path) -> None:
@@ -53,7 +53,22 @@ def main(corpus_path: Path, dist_path: Path) -> None:
         else:
             renumbered_lines.append(line)
     result = "\n".join(renumbered_lines)
-    if not result.endswith("\n"):
+    non_empty_lines = [line for line in result.split("\n") if line.strip() != ""]
+    sentences = []
+    current_sentence = []
+    for line in non_empty_lines:
+        if line.startswith("# sent_id"):
+            if current_sentence:
+                sentences.append(current_sentence)
+                current_sentence = []
+        current_sentence.append(line)
+    if current_sentence:
+        sentences.append(current_sentence)
+    result_parts = []
+    for sentence in sentences:
+        result_parts.append("\n".join(sentence))
+    result = "\n\n".join(result_parts)
+    if not result.endswith("\n\n"):
         result += "\n"
     (dist_path / "auto_annotated.conllu").write_text(result, encoding="utf-8")
 
